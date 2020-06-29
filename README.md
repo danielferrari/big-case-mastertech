@@ -12,3 +12,6 @@ Provider de configuração
 
 ## service-discovery
 Servidor de service discovery construído com Eureka
+
+## api-gateway
+Serviço de api-gateway feito com Zuul Proxy

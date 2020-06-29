@@ -1,0 +1,28 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+
+zuul:
+  routes:
+    service-discovery:
+      path: /service-discovery/**
+      url: http://localhost:8761/eureka
+    config:
+      path: /config/**
+      serviceId: config-provider
+    nfe:
+      path: /nfe/**
+      serviceId: nfe
+    cnpj:
+      path: /cep/**
+      url: https://www.receitaws.com.br/v1/cnpj
+    kafka:
+      path: /kafka/**
+      url: 54.39.28.62:9092
+
+ribbon:
+  ConnectTimeOut: 10000
+  ReadTimeout: 10000
