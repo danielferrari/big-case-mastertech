@@ -5,7 +5,7 @@ import br.com.mastertech.nfe.exceptions.NfeNotFoundException;
 import br.com.mastertech.nfe.helpers.ValidaIdentidadeHelper;
 import br.com.mastertech.nfe.models.NfeEmissao;
 import br.com.mastertech.nfe.models.Nfe;
-import br.com.mastertech.nfe.producers.NfeEmissaoProducer;
+import br.com.mastertech.nfe.producers.NfeProducer;
 import br.com.mastertech.nfe.repositories.NfeEmissaoRepository;
 import br.com.mastertech.nfe.repositories.NfeOperacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class NfeService {
     private NfeOperacaoRepository nfeOperacaoRepository;
 
     @Autowired
-    private NfeEmissaoProducer nfeEmissaoProducer;
+    private NfeProducer nfeProducer;
 
     public NfeEmissao create(NfeEmissao nfeEmissao) {
         if (!ValidaIdentidadeHelper.isValid(nfeEmissao.getIdentidade())) {
@@ -35,7 +35,7 @@ public class NfeService {
         return nfeEmissaoRepository.save(nfeEmissao);
     }
 
-    public void update(Long id, Nfe nfe) {
+    public NfeEmissao update(Long id, Nfe nfe) {
         Optional<NfeEmissao> nfeEmissaoOptional = nfeEmissaoRepository.findById(id);
 
 
@@ -47,7 +47,8 @@ public class NfeService {
 
         NfeEmissao nfeEmissao = nfeEmissaoOptional.get();
         nfeEmissao.setNfe(nfeSaved);
-        nfeEmissaoRepository.save(nfeEmissao);
+        nfeEmissao.setStatus("complete");
+        return nfeEmissaoRepository.save(nfeEmissao);
     }
 
     public List<NfeEmissao> getAll(String identidade) {

@@ -6,7 +6,7 @@ import br.com.mastertech.nfe.dtos.NfeStatusResponse;
 import br.com.mastertech.nfe.mappers.NfeMapper;
 import br.com.mastertech.nfe.models.NfeEmissao;
 import br.com.mastertech.nfe.models.Nfe;
-import br.com.mastertech.nfe.producers.NfeEmissaoProducer;
+import br.com.mastertech.nfe.producers.NfeProducer;
 import br.com.mastertech.nfe.services.NfeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class NfeController {
     private NfeMapper nfeMapper;
 
     @Autowired
-    private NfeEmissaoProducer nfeEmissaoProducer;
+    private NfeProducer nfeProducer;
 
     @PostMapping("/emitir")
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,19 +31,21 @@ public class NfeController {
         NfeEmissao nfeEmissao = nfeMapper.fromNfeEmissaoRequest(nfeSolicitacaoRequest);
         NfeEmissao nfeEmissaoResult = nfeService.create(nfeEmissao);
 
-        nfeEmissaoProducer.sentToKafka(nfeEmissaoResult);
+        nfeProducer.emitir(nfeEmissaoResult);
 
         return nfeMapper.fromNfeEmissao(nfeEmissaoResult);
     }
 
     @GetMapping("/consultar/{identidade}")
     public List<NfeEmissaoResponse> getAll(@PathVariable String identidade) {
+        nfeProducer.consultar(identidade);
         return nfeMapper.fromNfeEmissaoList(nfeService.getAll(identidade));
     }
 
-    @PutMapping("/atualizar/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizar(@PathVariable Long id, @RequestBody Nfe nfe) {
-        nfeService.update(id, nfe);
+    @PutMapping("/efetivar/{id}")
+    public NfeStatusResponse atualizar(@PathVariable Long id, @RequestBody Nfe nfe) {
+        NfeEmissao nfeEmissao = nfeService.update(id, nfe);
+        nfeProducer.efetivar(nfeEmissao);
+        return nfeMapper.fromNfeEmissao(nfeEmissao);
     }
 }
