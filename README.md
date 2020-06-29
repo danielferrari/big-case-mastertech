@@ -7,6 +7,9 @@ Responsável pela emissão e consulta das notas fiscais, além de ser o único m
 ## nfe-calculo
 Responsável por receber reativamente as notas fiscais, realizar o calculo dos impostos devidos e atualizar o status no banco de dados chamando o microsserviço de emissão (nfe)
 
+## nfe-logger
+Responsável por gravar os logs de atividades de nfe (emissão, consulta, efetivação)
+
 ## config-provider
 Provider de configuração
 
