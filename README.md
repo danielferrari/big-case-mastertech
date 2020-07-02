@@ -18,3 +18,6 @@ Servidor de service discovery construído com Eureka
 
 ## api-gateway
 Serviço de api-gateway feito com Zuul Proxy
+
+## auth-server
+Servidor de autorização construído com OAuth Cloud
