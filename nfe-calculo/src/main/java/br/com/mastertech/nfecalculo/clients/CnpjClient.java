@@ -1,6 +1,6 @@
 package br.com.mastertech.nfecalculo.clients;
 
-import br.com.mastertech.nfecalculo.dtos.CnpjDto;
+import br.com.mastertech.nfecalculo.dtos.CnpjResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CnpjClient {
 
     @GetMapping("/{cnpj}")
-    CnpjDto getCnpj(@PathVariable String cnpj);
+    CnpjResponseDto getCnpj(@PathVariable String cnpj);
 }
