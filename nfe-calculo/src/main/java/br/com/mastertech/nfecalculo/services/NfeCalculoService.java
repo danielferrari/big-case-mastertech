@@ -3,7 +3,7 @@ package br.com.mastertech.nfecalculo.services;
 import br.com.mastertech.nfe.models.NfeEmissao;
 import br.com.mastertech.nfecalculo.builders.NfeCalculoBuilder;
 import br.com.mastertech.nfecalculo.clients.CnpjClient;
-import br.com.mastertech.nfecalculo.dtos.CnpjDto;
+import br.com.mastertech.nfecalculo.dtos.CnpjResponseDto;
 import br.com.mastertech.nfecalculo.dtos.NfeCalculo;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +15,17 @@ public class NfeCalculoService {
     private CnpjClient cnpjClient;
 
     public NfeCalculo calcular(NfeEmissao nfeEmissao) {
-        try {
-            CnpjDto cnpjDto = cnpjClient.getCnpj(nfeEmissao.getIdentidade());
+        CnpjResponseDto cnpjResponseDto = cnpjClient.getCnpj(nfeEmissao.getIdentidade());
 
-            if (Double.parseDouble(cnpjDto.getCapitalSocial()) > 1000.00) {
-                return calculaPJ(nfeEmissao.getValor());
-            }
-
-            return calcularPJSimplesNacional(nfeEmissao.getValor());
-
-        } catch(FeignException.NotFound ex) {
+        if (cnpjResponseDto.getStatus().equals("ERROR")) {
             return calcularPF(nfeEmissao.getValor());
         }
+
+        if (Double.parseDouble(cnpjResponseDto.getCapitalSocial()) > 1000000.00) {
+            return calculaPJ(nfeEmissao.getValor());
+        }
+
+        return calcularPJSimplesNacional(nfeEmissao.getValor());
     }
 
     private NfeCalculo calcularPF(double valor) {
