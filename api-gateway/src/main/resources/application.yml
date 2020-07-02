@@ -6,6 +6,7 @@ spring:
     name: api-gateway
 
 zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
   routes:
     service-discovery:
       path: /service-discovery/**
@@ -16,6 +17,9 @@ zuul:
     nfe:
       path: /nfe/**
       serviceId: nfe
+    auth-server:
+      path: /auth-server/**
+      serviceId: auth-server
     cnpj:
       path: /cep/**
       url: https://www.receitaws.com.br/v1/cnpj
